@@ -1,6 +1,6 @@
 <!-- Product Table -->
 <main class="min-h-screen bg-gray-50 p-8">
-  <div class="mx-auto max-w-7xl space-y-8">
+  <div class="mx-auto max-w-7xl grid gap-8">
     <!-- Product Form -->
     <app-product-form [product]="selectedProduct" (save)="onSaveProduct($event)" (cancel)="onCancelForm()" class="mb-8"></app-product-form>
 
@@ -10,29 +10,11 @@
     </div>
 
     <!-- Products List -->
-    <div *ngIf="!isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <!-- @fixme refactor this into it's own component -->
-      <div *ngFor="let product of products" class="bg-white rounded-lg shadow-md p-6">
-        <div class="flex justify-between items-start mb-4">
-          <div>
-            <h3 class="text-lg font-semibold text-gray-900">{{ product.name }}</h3>
-            <p class="text-sm text-gray-500">{{ product.department }}</p>
-          </div>
-          <div class="flex space-x-2">
-            <button (click)="onEditProduct(product)" class="text-blue-600 hover:text-blue-800">
-              Edit
-            </button>
-            <button (click)="onDeleteProduct(product)" class="text-red-600 hover:text-red-800">
-              Delete
-            </button>
-          </div>
-        </div>
-        <p class="text-gray-700">{{ product.description }}</p>
-        <div class="mt-4 text-xs text-gray-500">
-          <p>Updated: {{ product.updatedAt | date:'mediumDate' }}</p>
-        </div>
-      </div>
-    </div>
+    @if (!isLoading) {
+      <app-product-section [products]="products"
+        (deleteProduct)="onDeleteProduct($event)"
+        (editProduct)="onEditProduct($event)"></app-product-section>
+    }
 
     <!-- Empty State -->
     <div *ngIf="!isLoading && products.length === 0" class="text-center py-8">

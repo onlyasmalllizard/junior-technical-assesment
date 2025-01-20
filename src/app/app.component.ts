@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { ProductFormComponent } from './product-form/product-form.component';
 import { ProductService } from './services/product.service';
 import { Product } from './models/product.model';
+import {ProductSectionComponent} from './product-section/product-section.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, ProductFormComponent],
+  imports: [RouterOutlet, CommonModule, ProductFormComponent, ProductSectionComponent],
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
@@ -23,7 +24,7 @@ export class AppComponent implements OnInit {
     this.loadProducts();
   }
 
-  private loadProducts(): void {
+  loadProducts(): void {
     this.isLoading = true;
     this.productService.getProducts().subscribe({
       next: (products) => {
