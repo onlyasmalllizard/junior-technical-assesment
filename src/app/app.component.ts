@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, viewChild} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductFormComponent } from './product-form/product-form.component';
 import { ProductService } from './services/product.service';
 import { Product } from './models/product.model';
 import {ProductSectionComponent} from './product-section/product-section.component';
+import {ErrorResponse} from './models/error.model';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,10 @@ export class AppComponent implements OnInit {
   selectedProduct?: Product;
   products: Product[] = [];
   isLoading = false;
+  /** The error messages to display */
+  errors: string[] = [];
+  /** The element reference to the error popup */
+  errorPopup = viewChild.required<ElementRef<HTMLDialogElement>>('errorPopup');
 
   constructor(private productService: ProductService) {}
 
@@ -45,16 +50,14 @@ export class AppComponent implements OnInit {
           this.loadProducts();
           this.selectedProduct = undefined;
         },
-        // @fixme show errors to user
-        error: (error) => console.error('Error updating product:', error)
+        error: (error) => this.handleError(error)
       });
     } else {
       this.productService.createProduct(productData).subscribe({
         next: () => {
           this.loadProducts();
         },
-        // @fixme show errors to user
-        error: (error) => console.error('Error creating product:', error)
+        error: (error) => this.handleError(error)
       });
     }
   }
@@ -76,5 +79,16 @@ export class AppComponent implements OnInit {
 
   onCancelForm(): void {
     this.selectedProduct = undefined;
+  }
+
+  /**
+   * Extracts the error messages from the response and opens the error modal
+   *
+   * @param errorResponse - the error response to be handled
+   * @private
+   */
+  private handleError(errorResponse: ErrorResponse): void {
+    this.errors = errorResponse.errors;
+    this.errorPopup().nativeElement.showModal();
   }
 }

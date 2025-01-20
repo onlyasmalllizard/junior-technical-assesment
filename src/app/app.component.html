@@ -4,6 +4,22 @@
     <!-- Product Form -->
     <app-product-form [product]="selectedProduct" (save)="onSaveProduct($event)" (cancel)="onCancelForm()" class="mb-8"></app-product-form>
 
+    <dialog #errorPopup
+            class="bg-white rounded-lg shadow-md p-6">
+      <div class="grid gap-6">
+        <h2 class="text-xl font-semibold text-gray-900">Error {{ selectedProduct ? 'updating' : 'creating' }} product:</h2>
+
+        <ul>
+          @for (error of errors; track error) {
+            <li>{{ error }}</li>
+          }
+        </ul>
+
+        <button (click)="errorPopup.close()"
+                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 justify-self-end">Close</button>
+      </div>
+    </dialog>
+
     <!-- Loading State -->
     <div *ngIf="isLoading" class="flex justify-center items-center py-8">
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
