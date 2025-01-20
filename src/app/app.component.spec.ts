@@ -2,32 +2,14 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { AppComponent } from './app.component';
 import { ProductFormComponent } from './product-form/product-form.component';
 import { ProductService } from './services/product.service';
-import { Product } from './models/product.model';
 import { Observable, of, throwError } from 'rxjs';
+import {ProductSectionComponent} from './product-section/product-section.component';
+import {mockProducts} from './mocks/products';
 
 describe('AppComponent', () => {
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
   let productService: jest.Mocked<ProductService>;
-
-  const mockProducts: Product[] = [
-    {
-      id: '1',
-      name: 'Test Product 1',
-      description: 'Test Description 1',
-      department: 'Test Department 1',
-      createdAt: new Date(),
-      updatedAt: new Date()
-    },
-    {
-      id: '2',
-      name: 'Test Product 2',
-      description: 'Test Description 2',
-      department: 'Test Department 2',
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }
-  ];
 
   beforeEach(async () => {
     const mockProductService = {
@@ -52,7 +34,7 @@ describe('AppComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [AppComponent, ProductFormComponent],
+      imports: [AppComponent, ProductFormComponent, ProductSectionComponent],
       providers: [
         { provide: ProductService, useValue: mockProductService }
       ]

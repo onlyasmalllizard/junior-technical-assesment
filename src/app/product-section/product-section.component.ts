@@ -8,8 +8,7 @@ import {DatePipe} from '@angular/common';
   imports: [
     DatePipe,
   ],
-  templateUrl: './product-section.component.html',
-  styleUrl: './product-section.component.scss'
+  templateUrl: './product-section.component.html'
 })
 export class ProductSectionComponent {
   /** The products to display in the section */
