@@ -18,9 +18,11 @@
       />
       @if (shouldShowError('name')) {
         <p class="mt-1 text-sm text-red-600">
-          <!-- @fixme improve the user feedback -->
-          @if (productForm.get('name')?.errors) {
-            Product name is invalid
+          @if (productForm.get('name')?.errors?.['required']) {
+            Product name is required
+          }
+          @if (productForm.get('name')?.errors?.['minlength']) {
+            Product name must be at least 3 characters
           }
         </p>
       }
