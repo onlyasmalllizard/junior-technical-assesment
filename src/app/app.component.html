@@ -2,7 +2,9 @@
 <main class="min-h-screen bg-gray-50 p-8">
   <div class="mx-auto max-w-7xl grid gap-8">
     <!-- Product Form -->
-    <app-product-form [product]="selectedProduct" (save)="onSaveProduct($event)" (cancel)="onCancelForm()" class="mb-8"></app-product-form>
+    <app-product-form [product]="selectedProduct" [shouldResetForm$]="shouldResetForm$" (save)="onSaveProduct($event)"
+                      (cancel)="onCancelForm()"
+                      class="mb-8"></app-product-form>
 
     <dialog #errorPopup
             class="bg-white rounded-lg shadow-md p-6">

@@ -6,6 +6,7 @@ import { ProductService } from './services/product.service';
 import { Product } from './models/product.model';
 import {ProductSectionComponent} from './product-section/product-section.component';
 import {ErrorResponse} from './models/error.model';
+import {Subject} from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,8 @@ export class AppComponent implements OnInit {
   isLoading = false;
   /** The error messages to display */
   errors: string[] = [];
+  /** The subject that indicates when the form should be reset */
+  shouldResetForm$: Subject<boolean> = new Subject<boolean>();
   /** The element reference to the error popup */
   errorPopup = viewChild.required<ElementRef<HTMLDialogElement>>('errorPopup');
 
@@ -49,6 +52,7 @@ export class AppComponent implements OnInit {
         next: () => {
           this.loadProducts();
           this.selectedProduct = undefined;
+          this.shouldResetForm$.next(true);
         },
         error: (error) => this.handleError(error)
       });
@@ -56,6 +60,7 @@ export class AppComponent implements OnInit {
       this.productService.createProduct(productData).subscribe({
         next: () => {
           this.loadProducts();
+          this.shouldResetForm$.next(true);
         },
         error: (error) => this.handleError(error)
       });
@@ -79,6 +84,7 @@ export class AppComponent implements OnInit {
 
   onCancelForm(): void {
     this.selectedProduct = undefined;
+    this.shouldResetForm$.next(true);
   }
 
   /**

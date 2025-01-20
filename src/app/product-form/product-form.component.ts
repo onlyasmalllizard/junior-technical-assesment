@@ -1,7 +1,17 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Product } from '../models/product.model';
+import {Subject} from 'rxjs';
 
 @Component({
   selector: 'app-product-form',
@@ -9,8 +19,10 @@ import { Product } from '../models/product.model';
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './product-form.component.html'
 })
-export class ProductFormComponent implements OnChanges {
+export class ProductFormComponent implements OnChanges, OnInit, OnDestroy {
   @Input() product?: Product;
+  /** The subject that indicates when the form should be reset */
+  @Input() shouldResetForm$!: Subject<boolean>;
   @Output() save = new EventEmitter<Omit<Product, 'id' | 'createdAt' | 'updatedAt'>>();
   @Output() cancel = new EventEmitter<void>();
 
@@ -22,6 +34,17 @@ export class ProductFormComponent implements OnChanges {
       name: ['', [Validators.required, Validators.minLength(3)]],
       description: ['', [Validators.required, Validators.minLength(10)]],
       department: ['', Validators.required]
+    });
+  }
+
+  /**
+   * Subscribes to the shouldResetForm subject to watch for when the form should be reset
+   */
+  ngOnInit(): void {
+    this.shouldResetForm$.subscribe(shouldResetForm => {
+      if (shouldResetForm) {
+        this.resetForm();
+      }
     });
   }
 
@@ -37,22 +60,26 @@ export class ProductFormComponent implements OnChanges {
     }
   }
 
-  // @fixme do not reset the form if there are errors
+  /**
+   * Unsubscribes from the shouldResetForm subject
+   */
+  ngOnDestroy(): void {
+    this.shouldResetForm$.unsubscribe();
+  }
+
   onSubmit(): void {
     this.isSubmitted = true;
 
     if (this.productForm.valid) {
       this.save.emit(this.productForm.value);
-      this.resetForm();
     }
   }
 
   onCancel(): void {
     this.cancel.emit();
-    this.resetForm();
   }
 
-  resetForm(): void {
+  private resetForm(): void {
     this.isSubmitted = false;
     this.productForm.reset({
       name: '',
