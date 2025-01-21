@@ -71,7 +71,10 @@ export class ProductService {
   updateProduct(id: string, product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): Observable<Product | undefined> {
     const index = this.products.findIndex(p => p.id === id);
 
-    const validationErrors = this.validateProduct(product);
+    // The requirement for a product name to be unique prevents this method from successfully completing if the user
+    // doesn't edit the product name. If we don't filter out the requirement for the name to be unique here, any
+    // attempt to update a card without changing the title throws an error
+    const validationErrors = this.validateProduct(product).filter(error => !error.includes('unique'));
     if (validationErrors.length > 0) {
       return throwError(() => ({
         status: 400,
