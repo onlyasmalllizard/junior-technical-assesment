@@ -11,7 +11,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Product } from '../models/product.model';
-import {Subject} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-product-form',
@@ -28,6 +28,8 @@ export class ProductFormComponent implements OnChanges, OnInit, OnDestroy {
 
   productForm: FormGroup;
   isSubmitted = false;
+  /** The active subscriptions in the component */
+  subscriptions: Subscription[] = [];
 
   constructor(private fb: FormBuilder) {
     this.productForm = this.fb.group({
@@ -41,11 +43,11 @@ export class ProductFormComponent implements OnChanges, OnInit, OnDestroy {
    * Subscribes to the shouldResetForm subject to watch for when the form should be reset
    */
   ngOnInit(): void {
-    this.shouldResetForm$.subscribe(shouldResetForm => {
+    this.subscriptions.push(this.shouldResetForm$.subscribe(shouldResetForm => {
       if (shouldResetForm) {
         this.resetForm();
       }
-    });
+    }));
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -56,15 +58,15 @@ export class ProductFormComponent implements OnChanges, OnInit, OnDestroy {
         department: this.product.department
       });
     } else if (changes['product'] && !this.product) {
-      this.resetForm();
+      this.shouldResetForm$.next(true);
     }
   }
 
   /**
-   * Unsubscribes from the shouldResetForm subject
+   * Unsubscribes from all subscriptions
    */
   ngOnDestroy(): void {
-    this.shouldResetForm$.unsubscribe();
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   onSubmit(): void {

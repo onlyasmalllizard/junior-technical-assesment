@@ -2,6 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProductFormComponent } from './product-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Product } from '../models/product.model';
+import {Subject} from 'rxjs';
+
+const shouldResetForm$ = new Subject<boolean>;
 
 describe('ProductFormComponent', () => {
   let component: ProductFormComponent;
@@ -15,6 +18,7 @@ describe('ProductFormComponent', () => {
 
     fixture = TestBed.createComponent(ProductFormComponent);
     component = fixture.componentInstance;
+    component.shouldResetForm$ = shouldResetForm$;
     fixture.detectChanges();
   });
 
