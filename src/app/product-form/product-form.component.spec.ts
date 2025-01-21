@@ -95,12 +95,21 @@ describe('ProductFormComponent', () => {
     expect(emitSpy).not.toHaveBeenCalled();
   });
 
-  xit('should emit cancel event', () => {
-    // @fixme complete this test
+  it('should emit cancel event', () => {
+    const cancelSpy = jest.spyOn(component.cancel, 'emit');
+
+    component.onCancel();
+
+    expect(cancelSpy).toHaveBeenCalled();
   });
 
-  xit('should reset form on cancel', () => {
-    // @fixme complete this test
+  it('should reset form on cancel', () => {
+    // @ts-expect-error spying on private method
+    const resetFormSpy = jest.spyOn(component, 'resetForm');
+
+    component.onCancel();
+
+    expect(resetFormSpy).toHaveBeenCalled();
   });
 
   it('should populate form when product input changes', () => {

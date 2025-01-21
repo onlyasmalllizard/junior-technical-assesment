@@ -79,6 +79,7 @@ export class ProductFormComponent implements OnChanges, OnInit, OnDestroy {
 
   onCancel(): void {
     this.cancel.emit();
+    this.shouldResetForm$.next(true);
   }
 
   private resetForm(): void {

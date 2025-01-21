@@ -84,7 +84,6 @@ export class AppComponent implements OnInit {
 
   onCancelForm(): void {
     this.selectedProduct = undefined;
-    this.shouldResetForm$.next(true);
   }
 
   /**
