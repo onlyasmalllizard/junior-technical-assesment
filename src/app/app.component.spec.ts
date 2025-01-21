@@ -121,7 +121,8 @@ describe('AppComponent', () => {
   }));
 
   it('should handle error when creating product', fakeAsync(() => {
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+    // @ts-expect-error spying on private method
+    const errorHandlerSpy = jest.spyOn(component, 'handleError').mockImplementation();
     productService.createProduct.mockReturnValueOnce(throwError(() => new Error('Test error')));
 
     component.onSaveProduct({
@@ -131,12 +132,13 @@ describe('AppComponent', () => {
     });
     tick(500);
 
-    expect(consoleErrorSpy).toHaveBeenCalled();
-    consoleErrorSpy.mockRestore();
+    expect(errorHandlerSpy).toHaveBeenCalled();
+    errorHandlerSpy.mockRestore();
   }));
 
   it('should handle error when updating product', fakeAsync(() => {
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+    // @ts-expect-error spying on private method
+    const errorHandlerSpy = jest.spyOn(component, 'handleError').mockImplementation();
     productService.updateProduct.mockReturnValueOnce(throwError(() => new Error('Test error')));
 
     component.selectedProduct = mockProducts[0];
@@ -147,8 +149,8 @@ describe('AppComponent', () => {
     });
     tick(500);
 
-    expect(consoleErrorSpy).toHaveBeenCalled();
-    consoleErrorSpy.mockRestore();
+    expect(errorHandlerSpy).toHaveBeenCalled();
+    errorHandlerSpy.mockRestore();
   }));
 
   it('should handle error when deleting product', fakeAsync(() => {
