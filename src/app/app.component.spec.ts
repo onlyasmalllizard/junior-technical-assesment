@@ -5,6 +5,14 @@ import { ProductService } from './services/product.service';
 import { Observable, of, throwError } from 'rxjs';
 import {ProductSectionComponent} from './product-section/product-section.component';
 import {mockProducts} from './mocks/products';
+import {signal} from '@angular/core';
+
+const mockPopup = {
+  nativeElement: {
+    showModal: jest.fn(),
+    close: jest.fn()
+  }
+};
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -43,6 +51,7 @@ describe('AppComponent', () => {
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
     productService = TestBed.inject(ProductService) as jest.Mocked<ProductService>;
+    component.errorPopup = signal(mockPopup) as any;
     fixture.detectChanges();
   });
 
@@ -163,4 +172,16 @@ describe('AppComponent', () => {
     expect(consoleErrorSpy).toHaveBeenCalled();
     consoleErrorSpy.mockRestore();
   }));
+
+  it('should store the errors and open the popup when handleError is called', () => {
+    const mockError = {
+      errors: ['a', 'b', 'c']
+    };
+
+    // @ts-expect-error testing private method
+    component.handleError(mockError);
+
+    expect(component.errors).toEqual(mockError.errors);
+    expect(mockPopup.nativeElement.showModal).toHaveBeenCalled();
+  });
 });
