@@ -32,7 +32,7 @@ export class AppComponent implements OnInit {
     this.loadProducts();
   }
 
-  loadProducts(): void {
+  private loadProducts(): void {
     this.isLoading = true;
     this.productService.getProducts().subscribe({
       next: (products) => {

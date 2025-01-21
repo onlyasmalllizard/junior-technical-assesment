@@ -106,10 +106,20 @@ describe('ProductFormComponent', () => {
   it('should reset form on cancel', () => {
     // @ts-expect-error spying on private method
     const resetFormSpy = jest.spyOn(component, 'resetForm');
+    component.productForm.setValue({
+      name: 'Test Product',
+      description: 'Test Description',
+      department: 'Test Department'
+    });
 
     component.onCancel();
 
     expect(resetFormSpy).toHaveBeenCalled();
+    expect(component.productForm.value).toEqual({
+      name: '',
+      description: '',
+      department: ''
+    });
   });
 
   it('should populate form when product input changes', () => {
